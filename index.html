@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <link href="https://fonts.googleapis.com/css?family=Yantramanav" rel="stylesheet">
+  <p>Enter project start date </p>
+<input type="date" id="date-input" required />
+<button id="submit">Calculate Workflow</button>
+ <select id="timeSelect">
+  <option id="days45">45 days</option>
+  <option id="days60">60 days</option>
+  <option id="days90">90 days</option>
+</select>
+  
+  <div id="totalHere">
+  </div>
+
+   <div id="statsHere">
+
+  </div>
+  
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    
+   var values = [45, 60, 90];
+document.getElementById('days45').setAttribute('value', values[0]);
+document.getElementById('days60').setAttribute('value', values[1]);
+document.getElementById('days90').setAttribute('value', values[2]);
+  
+$('#submit').on('click', function(){
+  var marker = $("#timeSelect option:selected").attr("value"); 
+  var date = new Date($('#date-input').val());
+  var day = date.getDate() + 1;
+  var month = date.getMonth();
+  var year = date.getFullYear();
+  //var day3 = date.getDate() + day;
+  var beg= new Date(year, month, day);
+  //var beg3= new Date(year, month, day3);
+    
+  google.charts.load("current", {packages:["timeline"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var container = document.getElementById('example2.1');
+    var chart = new google.visualization.Timeline(container);
+    var dataTable = new google.visualization.DataTable();
+    var marker2 = marker/3;
+    var end = new Date(beg.getTime()+(marker*24*60*60*1000)); 
+    var end2 = new Date(beg.getTime()+(marker2*24*60*60*1000)); 
+    var end3 = new Date(beg.getTime()+((marker2/2)*24*60*60*1000)); 
+    
+   dataTable.addColumn({ type: 'string', id: 'Term' });
+   dataTable.addColumn({ type: 'string', id: 'Name' });
+   dataTable.addColumn({ type: 'date', id: 'Start' });
+   dataTable.addColumn({ type: 'date', id: 'End' });
+   dataTable.addRows([
+      [ '1','Total', beg, end ],
+      [ '2','R&D', beg, end2 ],
+      [ '3','Implementation', end2, end ],
+      [ '4','Q/A', end3, end ]
+    ]);
+ var options = {
+      timeline: { showRowLabels: false }
+    };
+    chart.draw(dataTable, options);
+    $('#statsHere').html("<p> Project Begins </p> " + beg.toDateString() + "</br> <p> Project Ends </br></br>" + end.toDateString() + "</p>");
+  }
+/*
+$('#timeSelect').change(function(){
+var marker = $("#timeSelect option:selected").attr("value");  
+//$('#submit').on('click', function(){
+});
+*/
+    });
+</script>
+
+<style type="text/css">
+  * {
+font-family: 'Yantramanav', sans-serif;  }
+</style>
+<div id="example2.1" style="height: 400px;"></div>
+</body>
+</html>
